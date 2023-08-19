@@ -1,6 +1,5 @@
-# 미해결
 # 문제 링크: https://www.codetree.ai/missions/2/problems/one-trial-of-2048-game?utm_source=clipboard&utm_medium=text
-# 소요 시간: 2시간 30분
+# 소요 시간: 3시간 18분
 nums = [
     list(map(int, input().split()))
     for _ in range(4)
@@ -96,37 +95,34 @@ elif d == 'R' or d == 'D':
             else:
                 last_num = nums2[i][j]
 
-    for i in range(4):
-        print(nums2[i])
     if d == 'D':
         # 밀기
-        for i in range(4):
-            for j in range(4):
-                if nums[i][j] != 0:
-                    nums2[i].append(nums[i][j])
-        # 행렬변환
-        numsij = [
-            [0 for _ in range(4)]
+        nums3 = [
+            []
             for _ in range(4)
         ]
         for i in range(4):
             for j in range(len(nums2[i])):
-                print("ij", i, j)
-                numsij[j][i] = nums2[i][j]
-        nums2 = numsij
+                if nums2[i][j] != 0:
+                    nums3[i].append(nums2[i][j])
+            nums3[i] = [0 for _ in range(4-len(nums3[i]))] + nums3[i]
 
-    for i in range(4):
-        print(nums2[i])
+        # 출력
+        for j in range(4):
+            for i in range(4):
+                print(nums3[i][j], end=" ")
+            print()
 
-    # 출력
-    for i in range(4):
-        cnt = 0
-        for j in range(len(nums2[i])):
-            if nums2[i][j] != 0:
-                cnt += 1
-        for _ in range(4-cnt):
-            print(0, end=" ")
-        for j in range(len(nums2[i])):
-            if nums2[i][j] != 0:
-                print(nums2[i][j], end=" ")
-        print()
+    else:
+        # 출력
+        for i in range(4):
+            cnt = 0
+            for j in range(len(nums2[i])):
+                if nums2[i][j] != 0:
+                    cnt += 1
+            for _ in range(4-cnt):
+                print(0, end=" ")
+            for j in range(len(nums2[i])):
+                if nums2[i][j] != 0:
+                    print(nums2[i][j], end=" ")
+            print()
