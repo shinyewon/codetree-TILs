@@ -5,6 +5,7 @@ board = [
     [[] for _ in range(n)]
     for _ in range(n)
 ]
+
 for i in range(m):
     r, c, d, v = input().split()
     r, c, v = int(r) - 1, int(c) - 1, int(v)
@@ -24,29 +25,29 @@ for _ in range(t):
     ]
     for i in range(n):
         for j in range(n):
-            for k in range(len(board[i][j])):
-                if board[i][j][k] != []:
-                    # v만큼 이동
-                    ci, cj = i, j
-                    dis = 0
-                    while dis <= board[i][j][k][2]:
-                        new_i, new_j = ci + \
-                            dis[dtoN[board[i][j][k][1]]], cj + \
-                            djs[dtoN[board[i][j][k][1]]]
-                        if in_range(new_i, new_j):  # 이동 가능할 때
-                            if dis == board[i][j][k][2]:
-                                tmp[new_i][new_j].append(board[i][j][k])
-                            ci, cj = new_i, new_j
-                            dis += 1
-                        else:  # 벽에 부딪혔을 때
-                            if board[i][j][k][1] == 'U':
-                                board[i][j][k][1] = 'D'
-                            elif board[i][j][k][1] == 'D':
-                                board[i][j][k][1] = 'U'
-                            elif board[i][j][k][1] == 'L':
-                                board[i][j][k][1] = 'R'
-                            else:
-                                board[i][j][k][1] = 'L'
+            for b in range(len(board[i][j])):  # 각각의 공에 대해서
+                # v만큼 이동
+                ci, cj = i, j
+                move = 0
+                while move < board[i][j][b][2]:
+                    new_i, new_j = ci + \
+                        dis[dtoN[board[i][j][b][1]]], cj + \
+                        djs[dtoN[board[i][j][b][1]]]
+                    if in_range(new_i, new_j):  # 이동 가능할 때
+                        move += 1
+                        if move == board[i][j][b][2]:
+                            tmp[new_i][new_j].append(board[i][j][b])
+                        ci, cj = new_i, new_j
+                    else:  # 벽에 부딪혔을 때
+                        if board[i][j][b][1] == 'U':
+                            board[i][j][b][1] = 'D'
+                        elif board[i][j][b][1] == 'D':
+                            board[i][j][b][1] = 'U'
+                        elif board[i][j][b][1] == 'L':
+                            board[i][j][b][1] = 'R'
+                        else:
+                            board[i][j][b][1] = 'L'
+
     # 충돌 처리 및 복사
     for i in range(n):
         for j in range(n):
@@ -62,7 +63,6 @@ for _ in range(t):
                             minVI = l
                 tmp[i][j].pop(minVI)
             board[i][j] = tmp[i][j]
-
 
 cnt = 0
 for i in range(n):
