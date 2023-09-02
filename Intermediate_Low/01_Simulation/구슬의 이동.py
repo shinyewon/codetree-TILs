@@ -1,5 +1,5 @@
-# 미해결
-
+# 문제 링크: https://www.codetree.ai/missions/2/problems/marble-movement?&utm_source=clipboard&utm_medium=text
+# 소요 시간: 1시간 37분
 n, m, t, k = map(int, input().split())
 board = [
     [[] for _ in range(n)]
@@ -59,7 +59,7 @@ for _ in range(t):
                         minV = tmp[i][j][l][2]
                         minVI = l
                     elif tmp[i][j][l][2] == minV:
-                        if tmp[i][j][minVI][0] < tmp[i][j][l][0]:
+                        if tmp[i][j][minVI][0] > tmp[i][j][l][0]:
                             minVI = l
                 tmp[i][j].pop(minVI)
             board[i][j] = tmp[i][j]
