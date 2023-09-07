@@ -11,10 +11,11 @@ for _ in range(T):
         x, y, w, d = input().split()
         i, j, w, dNum = int(x) * 2 + 2000, (-int(y)) * \
             2 + 2000, int(w), dtoN[d]
-        if i > max_ij:
-            max_ij = i
-        if j > max_ij:
-            max_ij = j
+        # 아래의 주석 부분으로 인해 메모리 초과가 발생한다.
+        # if i > max_ij:
+        #    max_ij = i
+        # if j > max_ij:
+        #    max_ij = j
         marbles.append([num, i, j, w, dNum])
 
     def in_range(i, j):
