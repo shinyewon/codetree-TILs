@@ -1,61 +1,57 @@
 # Approach 2: 1초 간격으로 움직임을 직접 시뮬레이션 + 충돌을 2차원 배열로 확인
-# 런타임 에러, 격자 크기 조정중...
+# 오답노트: next_marble_index 배열의 크기가 매우 크기 때문에 전역 변수로 선언한 후,
+#          매초마다 초기화해야 할 인덱스만 선택적으로 초기화해주어야 한다.
+COORD_SIZE = 4000
+BLANK = -1
+
 T = int(input())  # 테스트 케이스 수
 dtoN = {'U': 0, 'D': 1, 'L': 2, 'R': 3}
 dis, djs = [-1, 1, 0, 0], [0, 0, -1, 1]
+
+next_marble_index = [
+    [BLANK for _ in range(COORD_SIZE + 1)]
+    for _ in range(COORD_SIZE + 1)
+]
+
 for _ in range(T):
-    min_i, min_j, max_i, max_j = 4000, 4000, 0, 0
     marbles = []
     N = int(input())  # 구슬 개수
     for num in range(1, N+1):
-        print(num)
-        x, y, w, d = input().split()
-        i, j, w, dNum = int(x) * 2 + 2000, (-int(y)) * \
+        x, y, w, d = tuple(input().split())
+        i, j, w, dNum = (-int(y)) * 2 + 2000, int(x) * \
             2 + 2000, int(w), dtoN[d]
-
-        if i > max_i:
-            max_i = i
-        if i < min_i:
-            min_i = i
-        if j > max_j:
-            max_j = j
-        if j < min_j:
-            min_j = j
-        marbles.append([num, i, j, w, dNum])
-        print(num, i, j, w, dNum)
-
-    def in_range(i, j):
-        return i >= 0 and i < max_i + 1 and j >= 0 and j < max_j + 1
+        marbles.append((num, i, j, w, dNum))
 
     colT = -1
-    row, col = max_i - min_i + 1, max_j - min_j + 1
-    for t in range(1, max(row, col)+1):
-        print(t)
-        next_marble_index = []
+
+    def in_range(i, j):
+        return i >= 0 and i < COORD_SIZE + 1 and j >= 0 and j < COORD_SIZE + 1
+
+    for t in range(1, COORD_SIZE + 1):
         next_marbles = []
-        board = [
-            [[] for _ in range(col)]
-            for _ in range(row)
-        ]
         # 이동
         for marble in marbles:
-            marble[1], marble[2] = marble[1] + \
-                dis[marble[4]], marble[2] + djs[marble[4]]
-            if in_range(marble[1] - min_i, marble[2] - min_j):
-                if board[marble[1]-min_i][marble[2]-min_j] == []:
-                    board[marble[1] - min_i][marble[2] - min_j] = marble
-                    next_marble_index.append([marble[1], marble[2]])
+            num, i, j, w, dNum = marble
+            new_i, new_j = i + dis[dNum], j + djs[dNum]
+            if in_range(new_i, new_j):
+                if next_marble_index[new_i][new_j] == BLANK:
+                    next_marbles.append((num, new_i, new_j, w, dNum))
+                    next_marble_index[new_i][new_j] = len(next_marbles) - 1
                 else:
                     colT = t
-                    if board[marble[1]][marble[2]][3] < marble[3]:
-                        board[marble[1]][marble[2]] = marble
-                    elif board[marble[1]][marble[2]] == marble[3] and board[marble[1]][marble[2]][0] < marble[0]:
-                        board[marble[1]][marble[2]] = marble
-
-        for i in range(len(next_marble_index)):
-            next_marbles.append(
-                board[next_marble_index[i][0]][next_marble_index[i][1]])
+                    # 무게가 크면
+                    if next_marbles[next_marble_index[new_i][new_j]][3] < w:
+                        next_marbles[next_marble_index[new_i][new_j]] = (
+                            num, new_i, new_j, w, dNum)
+                    # 무게가 같고 번호가 크면
+                    elif next_marbles[next_marble_index[new_i][new_j]][3] == w and next_marbles[next_marble_index[new_i][new_j]][0] < num:
+                        next_marbles[next_marble_index[new_i][new_j]] = (
+                            num, new_i, new_j, w, dNum)
 
         marbles = next_marbles[:]
+
+        # 다음 수행을 위한 초기화
+        for marble in next_marbles:
+            next_marble_index[marble[1]][marble[2]] = BLANK
 
     print(colT)
